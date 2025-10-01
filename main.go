@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func main() {
-	fmt.Println("Gobbles your text and spits out words, lines, and bytes.")
+	data, err := os.ReadFile("./testdata/words.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("data:", string(data))
 }
