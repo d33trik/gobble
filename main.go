@@ -11,21 +11,23 @@ func main() {
 		panic(err)
 	}
 
-	wordCount := countWords(data)
+	numberOfWords := CountWords(data)
 
-	fmt.Println(wordCount)
+	fmt.Println(numberOfWords)
 }
 
-func countWords(data []byte) int {
-	wordCount := 0
+func CountWords(data []byte) (numberOfWords int) {
+	if len(data) == 0 {
+		return 0
+	}
 
 	for _, byte := range data {
 		if byte == ' ' {
-			wordCount++
+			numberOfWords++
 		}
 	}
 
-	wordCount++
+	numberOfWords++
 
-	return wordCount
+	return numberOfWords
 }
