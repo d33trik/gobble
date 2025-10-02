@@ -19,6 +19,18 @@ func TestCountWords(t *testing.T) {
 			input: " ",
 			want:  0,
 		},
+		"multiple spaces": {
+			input: "one two three  four five six",
+			want:  6,
+		},
+		"start multiple spaces": {
+			input: "  one two three four five six",
+			want:  6,
+		},
+		"end multiple spaces": {
+			input: "one two three four five six",
+			want:  6,
+		},
 	}
 
 	for name, tc := range tests {

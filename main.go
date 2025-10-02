@@ -17,25 +17,17 @@ func main() {
 }
 
 func CountWords(data []byte) (numberOfWords int) {
-	if len(data) == 0 {
-		return 0
-	}
-
-	hasWord := false
+	wasSpace := true
 
 	for _, byte := range data {
-		if byte == ' ' {
+		isSpace := byte == ' '
+
+		if wasSpace && !isSpace {
 			numberOfWords++
-		} else {
-			hasWord = true
 		}
-	}
 
-	if !hasWord {
-		return 0
+		wasSpace = isSpace
 	}
-
-	numberOfWords++
 
 	return numberOfWords
 }
