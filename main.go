@@ -21,10 +21,18 @@ func CountWords(data []byte) (numberOfWords int) {
 		return 0
 	}
 
+	hasWord := false
+
 	for _, byte := range data {
 		if byte == ' ' {
 			numberOfWords++
+		} else {
+			hasWord = true
 		}
+	}
+
+	if !hasWord {
+		return 0
 	}
 
 	numberOfWords++
