@@ -1,6 +1,10 @@
-package main
+package main_test
 
-import "testing"
+import (
+	"testing"
+
+	gobble "github.com/d33trik/gobble"
+)
 
 func TestCountWords(t *testing.T) {
 	tests := map[string]struct {
@@ -43,7 +47,7 @@ func TestCountWords(t *testing.T) {
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := CountWords([]byte(tc.input))
+			got := gobble.CountWords([]byte(tc.input))
 			if got != tc.want {
 				t.Logf("got: %d, want: %d", got, tc.want)
 				t.Fail()
