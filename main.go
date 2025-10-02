@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 )
@@ -16,18 +17,7 @@ func main() {
 	fmt.Println(numberOfWords)
 }
 
-func CountWords(data []byte) (numberOfWords int) {
-	wasSpace := true
-
-	for _, byte := range data {
-		isSpace := (byte == ' ' || byte == '\n' || byte == '\t')
-
-		if wasSpace && !isSpace {
-			numberOfWords++
-		}
-
-		wasSpace = isSpace
-	}
-
-	return numberOfWords
+func CountWords(data []byte) int {
+	words := bytes.Fields(data)
+	return len(words)
 }
