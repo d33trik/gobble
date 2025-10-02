@@ -3,21 +3,27 @@ package main
 import "testing"
 
 func TestCountWords(t *testing.T) {
-	input := "one two three four five"
-	got := CountWords([]byte(input))
-	want := 5
-
-	if got != want {
-		t.Logf("got: %d want: %d", got, want)
-		t.Fail()
+	tests := map[string]struct {
+		input string
+		want  int
+	}{
+		"five words": {
+			input: "one two three four five",
+			want:  5,
+		},
+		"empty input": {
+			input: "",
+			want:  0,
+		},
 	}
 
-	input = ""
-	got = CountWords([]byte(input))
-	want = 0
-
-	if got != want {
-		t.Logf("got: %d want: %d", got, want)
-		t.Fail()
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			got := CountWords([]byte(tc.input))
+			if got != tc.want {
+				t.Logf("got: %d, want: %d", got, tc.want)
+				t.Fail()
+			}
+		})
 	}
 }
