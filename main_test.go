@@ -35,6 +35,10 @@ func TestCountWords(t *testing.T) {
 			input: "one two three\nfour five six",
 			want:  6,
 		},
+		"tab character": {
+			input: "one two three\tfour five six",
+			want:  6,
+		},
 	}
 
 	for name, tc := range tests {
