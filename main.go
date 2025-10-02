@@ -20,7 +20,7 @@ func CountWords(data []byte) (numberOfWords int) {
 	wasSpace := true
 
 	for _, byte := range data {
-		isSpace := byte == ' '
+		isSpace := (byte == ' ' || byte == '\n')
 
 		if wasSpace && !isSpace {
 			numberOfWords++
