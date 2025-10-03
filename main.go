@@ -3,13 +3,16 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os"
 )
 
 func main() {
+	log.SetFlags(0)
+
 	data, err := os.ReadFile("./testdata/words.txt")
 	if err != nil {
-		panic(err)
+		log.Fatalln("failed to read file:", err)
 	}
 
 	numberOfWords := CountWords(data)
