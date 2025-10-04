@@ -16,6 +16,10 @@ func TestCountLines(t *testing.T) {
 			input: "one two three four five\n",
 			want:  1,
 		},
+		"empty input": {
+			input: "",
+			want:  0,
+		},
 	}
 
 	for name, tc := range tests {
