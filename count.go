@@ -43,3 +43,18 @@ func CountWords(r io.Reader) (numberOfWords int) {
 
 	return numberOfWords
 }
+
+func CountBytes(r io.Reader) (numberOfBytes int) {
+	reader := bufio.NewReader(r)
+
+	for {
+		_, err := reader.ReadByte()
+		if err != nil {
+			break
+		}
+
+		numberOfBytes++
+	}
+
+	return numberOfBytes
+}

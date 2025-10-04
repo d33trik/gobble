@@ -106,3 +106,27 @@ func TestCountWords(t *testing.T) {
 		})
 	}
 }
+
+func TestCountBytes(t *testing.T) {
+	tests := map[string]struct {
+		input string
+		want  int
+	}{
+		"five words": {
+			input: "one two three four five",
+			want:  23,
+		},
+	}
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			r := strings.NewReader(tc.input)
+
+			got := gobble.CountBytes(r)
+			if got != tc.want {
+				t.Logf("got: %d, want: %d", got, tc.want)
+				t.Fail()
+			}
+		})
+	}
+}
