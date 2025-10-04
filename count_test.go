@@ -7,6 +7,30 @@ import (
 	gobble "github.com/d33trik/gobble"
 )
 
+func TestCountLines(t *testing.T) {
+	tests := map[string]struct {
+		input string
+		want  int
+	}{
+		"one new line": {
+			input: "one two three four five\n",
+			want:  1,
+		},
+	}
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			r := strings.NewReader(tc.input)
+
+			got := gobble.CountLines(r)
+			if got != tc.want {
+				t.Logf("got: %d, want: %d", got, tc.want)
+				t.Fail()
+			}
+		})
+	}
+}
+
 func TestCountWords(t *testing.T) {
 	tests := map[string]struct {
 		input string
