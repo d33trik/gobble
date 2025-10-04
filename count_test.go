@@ -116,6 +116,22 @@ func TestCountBytes(t *testing.T) {
 			input: "one two three four five",
 			want:  23,
 		},
+		"empty input": {
+			input: "",
+			want:  0,
+		},
+		"only spaces": {
+			input: "       ",
+			want:  7,
+		},
+		"new lines and words": {
+			input: "one\ntwo\nthree\nfour\n",
+			want:  19,
+		},
+		"unicode characters": {
+			input: "Ђ ʩ",
+			want:  5,
+		},
 	}
 
 	for name, tc := range tests {
