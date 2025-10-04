@@ -20,6 +20,22 @@ func TestCountLines(t *testing.T) {
 			input: "",
 			want:  0,
 		},
+		"no new lines": {
+			input: "one two three four five six",
+			want:  0,
+		},
+		"no new lines at end": {
+			input: "one two three four five\nsix",
+			want:  1,
+		},
+		"multiple lines with words": {
+			input: "one\ntow\nthree\nfour\nfive\n",
+			want:  5,
+		},
+		"multiple lines without words": {
+			input: "\n\n\n\n\n",
+			want:  5,
+		},
 	}
 
 	for name, tc := range tests {

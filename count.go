@@ -17,10 +17,17 @@ func CountWordsInFile(filename string) (int, error) {
 }
 
 func CountLines(r io.Reader) (numberOfLines int) {
-	scanner := bufio.NewScanner(r)
+	reader := bufio.NewReader(r)
 
-	for scanner.Scan() {
-		numberOfLines++
+	for {
+		r, _, err := reader.ReadRune()
+		if err != nil {
+			break
+		}
+
+		if r == '\n' {
+			numberOfLines++
+		}
 	}
 
 	return numberOfLines
