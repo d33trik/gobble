@@ -11,13 +11,14 @@ import (
 func main() {
 	log.SetFlags(0)
 
-	if len(os.Args) < 2 {
-		log.Fatalln("error: no file provided")
-	}
-
 	total := 0
 	hadError := false
 	filenames := os.Args[1:]
+
+	if len(filenames) == 0 {
+		numberOfWords := CountWords(os.Stdin)
+		fmt.Println(numberOfWords)
+	}
 
 	for _, filename := range filenames {
 		numberOfWords, err := CountWordsInFile(filename)
