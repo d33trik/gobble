@@ -12,10 +12,6 @@ func TestCountLines(t *testing.T) {
 		input string
 		want  int
 	}{
-		"one new line": {
-			input: "one two three four five\n",
-			want:  1,
-		},
 		"empty input": {
 			input: "",
 			want:  0,
@@ -23,6 +19,10 @@ func TestCountLines(t *testing.T) {
 		"no new lines": {
 			input: "one two three four five six",
 			want:  0,
+		},
+		"one new line": {
+			input: "one two three four five\n",
+			want:  1,
 		},
 		"no new lines at end": {
 			input: "one two three four five\nsix",
@@ -56,13 +56,13 @@ func TestCountWords(t *testing.T) {
 		input string
 		want  int
 	}{
-		"five words": {
-			input: "one two three four five",
-			want:  5,
-		},
 		"empty input": {
 			input: "",
 			want:  0,
+		},
+		"five words": {
+			input: "one two three four five",
+			want:  5,
 		},
 		"single space": {
 			input: " ",
@@ -77,7 +77,7 @@ func TestCountWords(t *testing.T) {
 			want:  6,
 		},
 		"end multiple spaces": {
-			input: "one two three four five six",
+			input: "one two three four five six  ",
 			want:  6,
 		},
 		"new line": {
@@ -112,13 +112,13 @@ func TestCountBytes(t *testing.T) {
 		input string
 		want  int
 	}{
-		"five words": {
-			input: "one two three four five",
-			want:  23,
-		},
 		"empty input": {
 			input: "",
 			want:  0,
+		},
+		"five words": {
+			input: "one two three four five",
+			want:  23,
 		},
 		"only spaces": {
 			input: "       ",
