@@ -32,7 +32,7 @@ func TestCountLines(t *testing.T) {
 			input: "one\ntow\nthree\nfour\nfive\n",
 			want:  5,
 		},
-		"multiple lines without words": {
+		"only lines": {
 			input: "\n\n\n\n\n",
 			want:  5,
 		},
@@ -68,7 +68,7 @@ func TestCountWords(t *testing.T) {
 			input: " ",
 			want:  0,
 		},
-		"multiple spaces": {
+		"multiple spaces between words": {
 			input: "one two three  four five six",
 			want:  6,
 		},
@@ -124,7 +124,7 @@ func TestCountBytes(t *testing.T) {
 			input: "       ",
 			want:  7,
 		},
-		"new lines and words": {
+		"multiple lines with words": {
 			input: "one\ntwo\nthree\nfour\n",
 			want:  19,
 		},
@@ -141,6 +141,58 @@ func TestCountBytes(t *testing.T) {
 			got := gobble.CountBytes(r)
 			if got != tc.want {
 				t.Logf("got: %d, want: %d", got, tc.want)
+				t.Fail()
+			}
+		})
+	}
+}
+
+func TestCount(t *testing.T) {
+	tests := map[string]struct {
+		input     string
+		wantLines int
+		wantWords int
+		wantBytes int
+	}{
+		"empty input": {
+			input:     "",
+			wantLines: 0,
+			wantWords: 0,
+			wantBytes: 0,
+		},
+		"five words": {
+			input:     "one two three four five",
+			wantLines: 0,
+			wantWords: 5,
+			wantBytes: 23,
+		},
+		"multiple lines with words": {
+			input:     "one\ntwo\nthree\nfour\nfive\n",
+			wantLines: 5,
+			wantWords: 5,
+			wantBytes: 24,
+		},
+		"only lines": {
+			input:     "\n\n\n\n\n",
+			wantLines: 5,
+			wantWords: 0,
+			wantBytes: 5,
+		},
+		"only spaces": {
+			input:     "       ",
+			wantLines: 0,
+			wantWords: 0,
+			wantBytes: 7,
+		},
+	}
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			r := strings.NewReader(tc.input)
+
+			gotLines, gotWords, gotBytes := gobble.Count(r)
+			if gotLines != tc.wantLines || gotWords != tc.wantWords || gotBytes != tc.wantBytes {
+				t.Logf("got: (%d, %d, %d), want: (%d, %d, %d)", gotLines, gotWords, gotBytes, tc.wantLines, tc.wantWords, tc.wantBytes)
 				t.Fail()
 			}
 		})
