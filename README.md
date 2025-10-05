@@ -4,4 +4,4 @@
 
 # gobble
 
-Gobbles your text and spits out words, lines, and bytes.
+Gobbles your text and spits out the number of lines, words and bytes.
