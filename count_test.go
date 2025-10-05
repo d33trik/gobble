@@ -16,25 +16,25 @@ func TestCountLines(t *testing.T) {
 			input: "",
 			want:  0,
 		},
-		"no new lines": {
+		"only words": {
 			input: "one two three four five six",
 			want:  0,
 		},
-		"one new line": {
-			input: "one two three four five\n",
-			want:  1,
-		},
-		"no new lines at end": {
-			input: "one two three four five\nsix",
-			want:  1,
-		},
-		"multiple lines with words": {
-			input: "one\ntow\nthree\nfour\nfive\n",
-			want:  5,
-		},
-		"only lines": {
+		"only new lines": {
 			input: "\n\n\n\n\n",
 			want:  5,
+		},
+		"new line": {
+			input: "one two three\nfour five six",
+			want:  1,
+		},
+		"end new line": {
+			input: "one two three four five six\n",
+			want:  1,
+		},
+		"multiple new lines": {
+			input: "one\ntow\nthree\nfour\nfive\nsix\n",
+			want:  6,
 		},
 	}
 
@@ -60,12 +60,12 @@ func TestCountWords(t *testing.T) {
 			input: "",
 			want:  0,
 		},
-		"five words": {
+		"only words": {
 			input: "one two three four five",
 			want:  5,
 		},
-		"single space": {
-			input: " ",
+		"only spaces": {
+			input: "       ",
 			want:  0,
 		},
 		"multiple spaces between words": {
@@ -80,17 +80,13 @@ func TestCountWords(t *testing.T) {
 			input: "one two three four five six  ",
 			want:  6,
 		},
-		"new line": {
-			input: "one two three\nfour five six",
-			want:  6,
-		},
-		"tab character": {
-			input: "one two three\tfour five six",
-			want:  6,
-		},
 		"utf8 spaces": {
 			input: "one two three four five six",
 			want:  6,
+		},
+		"unicode characters": {
+			input: "Ђ ʩ",
+			want:  2,
 		},
 	}
 
@@ -116,17 +112,29 @@ func TestCountBytes(t *testing.T) {
 			input: "",
 			want:  0,
 		},
-		"five words": {
-			input: "one two three four five",
-			want:  23,
+		"only words": {
+			input: "one two three four five six",
+			want:  27,
+		},
+		"only new lines": {
+			input: "\n\n\n\n\n",
+			want:  5,
+		},
+		"multiple new lines": {
+			input: "one\ntwo\nthree\nfour\nfive\nsix",
+			want:  27,
 		},
 		"only spaces": {
 			input: "       ",
 			want:  7,
 		},
-		"multiple lines with words": {
-			input: "one\ntwo\nthree\nfour\n",
-			want:  19,
+		"multiple spaces between words": {
+			input: "one two three  four five six",
+			want:  28,
+		},
+		"utf8 spaces": {
+			input: "one two three four five six",
+			want:  37,
 		},
 		"unicode characters": {
 			input: "Ђ ʩ",
@@ -160,29 +168,47 @@ func TestCount(t *testing.T) {
 			wantWords: 0,
 			wantBytes: 0,
 		},
-		"five words": {
+		"only words": {
 			input:     "one two three four five",
 			wantLines: 0,
 			wantWords: 5,
 			wantBytes: 23,
 		},
-		"multiple lines with words": {
-			input:     "one\ntwo\nthree\nfour\nfive\n",
-			wantLines: 5,
-			wantWords: 5,
-			wantBytes: 24,
-		},
-		"only lines": {
+		"only new lines": {
 			input:     "\n\n\n\n\n",
 			wantLines: 5,
 			wantWords: 0,
 			wantBytes: 5,
+		},
+		"multiple new lines": {
+			input:     "one\ntwo\nthree\nfour\nfive\n",
+			wantLines: 5,
+			wantWords: 5,
+			wantBytes: 24,
 		},
 		"only spaces": {
 			input:     "       ",
 			wantLines: 0,
 			wantWords: 0,
 			wantBytes: 7,
+		},
+		"multiple spaces between words": {
+			input:     "one two three  four five six",
+			wantLines: 0,
+			wantWords: 6,
+			wantBytes: 28,
+		},
+		"utf8 spaces": {
+			input:     "one two three four five six",
+			wantLines: 0,
+			wantWords: 6,
+			wantBytes: 37,
+		},
+		"unicode characters": {
+			input:     "Ђ ʩ",
+			wantLines: 0,
+			wantWords: 2,
+			wantBytes: 5,
 		},
 	}
 
