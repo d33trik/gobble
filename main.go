@@ -14,21 +14,25 @@ func main() {
 	filenames := os.Args[1:]
 
 	if len(filenames) == 0 {
-		numberOfWords := CountWords(os.Stdin)
-		fmt.Println(numberOfWords)
+		lines, words, bytes := Count(os.Stdin)
+		fmt.Println(lines, words, bytes)
 	}
 
 	for _, filename := range filenames {
-		numberOfWords, err := CountWordsInFile(filename)
-		if err != nil {
-			hadError = true
-			fmt.Fprintln(os.Stderr, "gobble:", err)
-			continue
-		}
+		func() {
+			file, err := os.Open(filename)
+			if err != nil {
+				hadError = true
+				fmt.Fprintln(os.Stderr, "gobble:", err)
+				return
+			}
+			defer file.Close()
 
-		total = total + numberOfWords
+			lines, words, bytes := Count(file)
+			total = total + words
 
-		fmt.Println(numberOfWords, filename)
+			fmt.Println(lines, words, bytes, filename)
+		}()
 	}
 
 	if len(filenames) > 1 {

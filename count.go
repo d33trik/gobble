@@ -3,17 +3,20 @@ package main
 import (
 	"bufio"
 	"io"
-	"os"
 )
 
-func CountWordsInFile(filename string) (int, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return 0, err
-	}
-	defer file.Close()
+func Count(rs io.ReadSeeker) (lines, words, bytes int) {
+	const offsetStart = 0
 
-	return CountWords(file), nil
+	lines = CountLines(rs)
+	rs.Seek(offsetStart, io.SeekStart)
+
+	words = CountWords(rs)
+	rs.Seek(offsetStart, io.SeekStart)
+
+	bytes = CountBytes(rs)
+
+	return lines, words, bytes
 }
 
 func CountLines(r io.Reader) (numberOfLines int) {
