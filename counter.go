@@ -5,18 +5,28 @@ import (
 	"io"
 )
 
-func Count(rs io.ReadSeeker) (lines, words, bytes int) {
+type Stats struct {
+	Lines int
+	Words int
+	Bytes int
+}
+
+func Count(rs io.ReadSeeker) Stats {
 	const offsetStart = 0
 
-	lines = CountLines(rs)
+	lines := CountLines(rs)
 	rs.Seek(offsetStart, io.SeekStart)
 
-	words = CountWords(rs)
+	words := CountWords(rs)
 	rs.Seek(offsetStart, io.SeekStart)
 
-	bytes = CountBytes(rs)
+	bytes := CountBytes(rs)
 
-	return lines, words, bytes
+	return Stats{
+		Lines: lines,
+		Words: words,
+		Bytes: bytes,
+	}
 }
 
 func CountLines(r io.Reader) (numberOfLines int) {

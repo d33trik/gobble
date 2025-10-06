@@ -157,58 +157,72 @@ func TestCountBytes(t *testing.T) {
 
 func TestCount(t *testing.T) {
 	tests := map[string]struct {
-		input     string
-		wantLines int
-		wantWords int
-		wantBytes int
+		input string
+		want  gobble.Stats
 	}{
 		"empty input": {
-			input:     "",
-			wantLines: 0,
-			wantWords: 0,
-			wantBytes: 0,
+			input: "",
+			want: gobble.Stats{
+				Lines: 0,
+				Words: 0,
+				Bytes: 0,
+			},
 		},
 		"only words": {
-			input:     "one two three four five",
-			wantLines: 0,
-			wantWords: 5,
-			wantBytes: 23,
+			input: "one two three four five",
+			want: gobble.Stats{
+				Lines: 0,
+				Words: 5,
+				Bytes: 23,
+			},
 		},
 		"only new lines": {
-			input:     "\n\n\n\n\n",
-			wantLines: 5,
-			wantWords: 0,
-			wantBytes: 5,
+			input: "\n\n\n\n\n",
+			want: gobble.Stats{
+				Lines: 5,
+				Words: 0,
+				Bytes: 5,
+			},
 		},
 		"multiple new lines": {
-			input:     "one\ntwo\nthree\nfour\nfive\n",
-			wantLines: 5,
-			wantWords: 5,
-			wantBytes: 24,
+			input: "one\ntwo\nthree\nfour\nfive\n",
+			want: gobble.Stats{
+				Lines: 5,
+				Words: 5,
+				Bytes: 24,
+			},
 		},
 		"only spaces": {
-			input:     "       ",
-			wantLines: 0,
-			wantWords: 0,
-			wantBytes: 7,
+			input: "       ",
+			want: gobble.Stats{
+				Lines: 0,
+				Words: 0,
+				Bytes: 7,
+			},
 		},
 		"multiple spaces between words": {
-			input:     "one two three  four five six",
-			wantLines: 0,
-			wantWords: 6,
-			wantBytes: 28,
+			input: "one two three  four five six",
+			want: gobble.Stats{
+				Lines: 0,
+				Words: 6,
+				Bytes: 28,
+			},
 		},
 		"utf8 spaces": {
-			input:     "one two three four five six",
-			wantLines: 0,
-			wantWords: 6,
-			wantBytes: 37,
+			input: "one two three four five six",
+			want: gobble.Stats{
+				Lines: 0,
+				Words: 6,
+				Bytes: 37,
+			},
 		},
 		"unicode characters": {
-			input:     "Ђ ʩ",
-			wantLines: 0,
-			wantWords: 2,
-			wantBytes: 5,
+			input: "Ђ ʩ",
+			want: gobble.Stats{
+				Lines: 0,
+				Words: 2,
+				Bytes: 5,
+			},
 		},
 	}
 
@@ -216,9 +230,9 @@ func TestCount(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			r := strings.NewReader(tc.input)
 
-			gotLines, gotWords, gotBytes := gobble.Count(r)
-			if gotLines != tc.wantLines || gotWords != tc.wantWords || gotBytes != tc.wantBytes {
-				t.Logf("got: (%d, %d, %d), want: (%d, %d, %d)", gotLines, gotWords, gotBytes, tc.wantLines, tc.wantWords, tc.wantBytes)
+			got := gobble.Count(r)
+			if got != tc.want {
+				t.Logf("got: %v, want: %v", got, tc.want)
 				t.Fail()
 			}
 		})

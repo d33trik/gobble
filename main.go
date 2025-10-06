@@ -14,8 +14,8 @@ func main() {
 	filenames := os.Args[1:]
 
 	if len(filenames) == 0 {
-		lines, words, bytes := Count(os.Stdin)
-		fmt.Println(lines, words, bytes)
+		stats := Count(os.Stdin)
+		fmt.Println(stats.Lines, stats.Words, stats.Bytes)
 	}
 
 	for _, filename := range filenames {
@@ -28,10 +28,10 @@ func main() {
 			}
 			defer file.Close()
 
-			lines, words, bytes := Count(file)
-			total = total + words
+			stats := Count(file)
+			total = total + stats.Words
 
-			fmt.Println(lines, words, bytes, filename)
+			fmt.Println(stats.Lines, stats.Words, stats.Bytes, filename)
 		}()
 	}
 
