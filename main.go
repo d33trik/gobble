@@ -14,7 +14,7 @@ func main() {
 	filenames := os.Args[1:]
 
 	if len(filenames) == 0 {
-		Count(os.Stdin).Print(os.Stdout, "")
+		Count(os.Stdin).Print(os.Stdout)
 	}
 
 	for _, filename := range filenames {

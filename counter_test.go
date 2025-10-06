@@ -243,7 +243,7 @@ func TestCount(t *testing.T) {
 func TestPrint(t *testing.T) {
 	type input struct {
 		stats gobble.Stats
-		label string
+		label []string
 	}
 
 	tests := map[string]struct {
@@ -257,7 +257,7 @@ func TestPrint(t *testing.T) {
 					Words: 5,
 					Bytes: 24,
 				},
-				label: "",
+				label: []string{},
 			},
 			want: "1 5 24\n",
 		},
@@ -268,7 +268,7 @@ func TestPrint(t *testing.T) {
 					Words: 5,
 					Bytes: 23,
 				},
-				label: "words.txt",
+				label: []string{"words.txt"},
 			},
 			want: "0 5 23 words.txt\n",
 		},
@@ -277,7 +277,7 @@ func TestPrint(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			got := &bytes.Buffer{}
-			tc.input.stats.Print(got, tc.input.label)
+			tc.input.stats.Print(got, tc.input.label...)
 
 			if got.String() != tc.want {
 				t.Logf("got %s, want: %s", got, tc.want)

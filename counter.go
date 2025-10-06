@@ -12,10 +12,10 @@ type Stats struct {
 	Bytes int
 }
 
-func (s Stats) Print(w io.Writer, label string) {
+func (s Stats) Print(w io.Writer, labels ...string) {
 	fmt.Fprintf(w, "%d %d %d", s.Lines, s.Words, s.Bytes)
 
-	if label != "" {
+	for _, label := range labels {
 		fmt.Fprintf(w, " %s", label)
 	}
 
