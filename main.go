@@ -9,13 +9,12 @@ import (
 func main() {
 	log.SetFlags(0)
 
-	total := 0
+	totals := Stats{}
 	hadError := false
 	filenames := os.Args[1:]
 
 	if len(filenames) == 0 {
-		stats := Count(os.Stdin)
-		fmt.Println(stats.Lines, stats.Words, stats.Bytes)
+		Count(os.Stdin).Print(os.Stdout, "")
 	}
 
 	for _, filename := range filenames {
@@ -29,14 +28,18 @@ func main() {
 			defer file.Close()
 
 			stats := Count(file)
-			total = total + stats.Words
+			totals = Stats{
+				Lines: totals.Lines + stats.Lines,
+				Words: totals.Words + stats.Words,
+				Bytes: totals.Bytes + stats.Bytes,
+			}
 
-			fmt.Println(stats.Lines, stats.Words, stats.Bytes, filename)
+			stats.Print(os.Stdout, filename)
 		}()
 	}
 
 	if len(filenames) > 1 {
-		fmt.Println(total, "total")
+		totals.Print(os.Stdout, "total")
 	}
 
 	if hadError {

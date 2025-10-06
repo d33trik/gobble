@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 )
 
@@ -9,6 +10,16 @@ type Stats struct {
 	Lines int
 	Words int
 	Bytes int
+}
+
+func (s Stats) Print(w io.Writer, label string) {
+	fmt.Fprintf(w, "%d %d %d", s.Lines, s.Words, s.Bytes)
+
+	if label != "" {
+		fmt.Fprintf(w, " %s", label)
+	}
+
+	fmt.Fprintf(w, "\n")
 }
 
 func Count(rs io.ReadSeeker) Stats {
