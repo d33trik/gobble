@@ -12,7 +12,7 @@ type Stats struct {
 	Bytes int
 }
 
-func (s Stats) Print(w io.Writer, labels ...string) {
+func (s *Stats) Print(w io.Writer, labels ...string) {
 	fmt.Fprintf(w, "%d %d %d", s.Lines, s.Words, s.Bytes)
 
 	for _, label := range labels {
@@ -20,6 +20,12 @@ func (s Stats) Print(w io.Writer, labels ...string) {
 	}
 
 	fmt.Fprintf(w, "\n")
+}
+
+func (s *Stats) Add(other Stats) {
+	s.Lines += other.Lines
+	s.Words += other.Words
+	s.Bytes += other.Bytes
 }
 
 func Count(rs io.ReadSeeker) Stats {
