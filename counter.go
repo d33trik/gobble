@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"strconv"
+	"strings"
 )
 
 type Stats struct {
@@ -12,14 +14,26 @@ type Stats struct {
 	Bytes int
 }
 
-func (s *Stats) Print(w io.Writer, labels ...string) {
-	fmt.Fprintf(w, "%d %d %d", s.Lines, s.Words, s.Bytes)
+func (s *Stats) Print(w io.Writer, opts DisplayOptions, labels ...string) {
+	fields := []string{}
 
-	for _, label := range labels {
-		fmt.Fprintf(w, " %s", label)
+	if opts.ShouldPrintLines() {
+		fields = append(fields, strconv.Itoa(s.Lines))
 	}
 
-	fmt.Fprintf(w, "\n")
+	if opts.ShouldPrintWords() {
+		fields = append(fields, strconv.Itoa(s.Words))
+	}
+
+	if opts.ShouldPrintBytes() {
+		fields = append(fields, strconv.Itoa(s.Bytes))
+	}
+
+	fields = append(fields, labels...)
+
+	line := strings.Join(fields, " ")
+
+	fmt.Fprintln(w, line)
 }
 
 func (s *Stats) Add(other Stats) {

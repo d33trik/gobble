@@ -248,6 +248,7 @@ func TestPrint(t *testing.T) {
 
 	tests := map[string]struct {
 		input input
+		opts  gobble.DisplayOptions
 		want  string
 	}{
 		"empty label": {
@@ -259,25 +260,99 @@ func TestPrint(t *testing.T) {
 				},
 				label: []string{},
 			},
+			opts: gobble.DisplayOptions{
+				PrintLines: false,
+				PrintWords: false,
+				PrintBytes: false,
+			},
 			want: "1 5 24\n",
 		},
-		"only words": {
+		"print default": {
 			input: input{
 				stats: gobble.Stats{
-					Lines: 0,
+					Lines: 1,
 					Words: 5,
-					Bytes: 23,
+					Bytes: 24,
 				},
-				label: []string{"words.txt"},
+				label: []string{"file.txt"},
 			},
-			want: "0 5 23 words.txt\n",
+			opts: gobble.DisplayOptions{
+				PrintLines: false,
+				PrintWords: false,
+				PrintBytes: false,
+			},
+			want: "1 5 24 file.txt\n",
+		},
+		"print all": {
+			input: input{
+				stats: gobble.Stats{
+					Lines: 1,
+					Words: 5,
+					Bytes: 24,
+				},
+				label: []string{"file.txt"},
+			},
+			opts: gobble.DisplayOptions{
+				PrintLines: true,
+				PrintWords: true,
+				PrintBytes: true,
+			},
+			want: "1 5 24 file.txt\n",
+		},
+		"print only lines": {
+			input: input{
+				stats: gobble.Stats{
+					Lines: 1,
+					Words: 5,
+					Bytes: 24,
+				},
+				label: []string{"file.txt"},
+			},
+			opts: gobble.DisplayOptions{
+				PrintLines: true,
+				PrintWords: false,
+				PrintBytes: false,
+			},
+			want: "1 file.txt\n",
+		},
+		"print only words": {
+			input: input{
+				stats: gobble.Stats{
+					Lines: 1,
+					Words: 5,
+					Bytes: 24,
+				},
+				label: []string{"file.txt"},
+			},
+			opts: gobble.DisplayOptions{
+				PrintLines: false,
+				PrintWords: true,
+				PrintBytes: false,
+			},
+			want: "5 file.txt\n",
+		},
+		"print only bytes": {
+			input: input{
+				stats: gobble.Stats{
+					Lines: 1,
+					Words: 5,
+					Bytes: 24,
+				},
+				label: []string{"file.txt"},
+			},
+			opts: gobble.DisplayOptions{
+				PrintLines: false,
+				PrintWords: false,
+				PrintBytes: true,
+			},
+			want: "24 file.txt\n",
 		},
 	}
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			got := &bytes.Buffer{}
-			tc.input.stats.Print(got, tc.input.label...)
+			tc.input.stats.Print(got, tc.opts, tc.input.label...)
 
 			if got.String() != tc.want {
 				t.Logf("got %s, want: %s", got, tc.want)
