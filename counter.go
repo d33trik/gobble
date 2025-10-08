@@ -6,6 +6,7 @@ import (
 	"io"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 type Stats struct {
@@ -42,63 +43,30 @@ func (s *Stats) Add(other Stats) {
 	s.Bytes += other.Bytes
 }
 
-func Count(rs io.ReadSeeker) Stats {
-	const offsetStart = 0
-
-	lines := CountLines(rs)
-	rs.Seek(offsetStart, io.SeekStart)
-
-	words := CountWords(rs)
-	rs.Seek(offsetStart, io.SeekStart)
-
-	bytes := CountBytes(rs)
-
-	return Stats{
-		Lines: lines,
-		Words: words,
-		Bytes: bytes,
-	}
-}
-
-func CountLines(r io.Reader) (numberOfLines int) {
+func Count(r io.Reader) (stats Stats) {
+	isInsideWord := false
 	reader := bufio.NewReader(r)
 
 	for {
-		r, _, err := reader.ReadRune()
+		r, size, err := reader.ReadRune()
 		if err != nil {
 			break
 		}
 
 		if r == '\n' {
-			numberOfLines++
-		}
-	}
-
-	return numberOfLines
-}
-
-func CountWords(r io.Reader) (numberOfWords int) {
-	scanner := bufio.NewScanner(r)
-	scanner.Split(bufio.ScanWords)
-
-	for scanner.Scan() {
-		numberOfWords++
-	}
-
-	return numberOfWords
-}
-
-func CountBytes(r io.Reader) (numberOfBytes int) {
-	reader := bufio.NewReader(r)
-
-	for {
-		_, err := reader.ReadByte()
-		if err != nil {
-			break
+			stats.Lines++
 		}
 
-		numberOfBytes++
+		isSpace := unicode.IsSpace(r)
+
+		if !isSpace && !isInsideWord {
+			stats.Words++
+		}
+
+		isInsideWord = !isSpace
+
+		stats.Bytes += size
 	}
 
-	return numberOfBytes
+	return stats
 }
