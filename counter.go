@@ -16,25 +16,29 @@ type Stats struct {
 }
 
 func (s *Stats) Print(w io.Writer, opts DisplayOptions, labels ...string) {
-	fields := []string{}
+	counts := []string{}
 
 	if opts.ShouldPrintLines() {
-		fields = append(fields, strconv.Itoa(s.Lines))
+		counts = append(counts, strconv.Itoa(s.Lines))
 	}
 
 	if opts.ShouldPrintWords() {
-		fields = append(fields, strconv.Itoa(s.Words))
+		counts = append(counts, strconv.Itoa(s.Words))
 	}
 
 	if opts.ShouldPrintBytes() {
-		fields = append(fields, strconv.Itoa(s.Bytes))
+		counts = append(counts, strconv.Itoa(s.Bytes))
 	}
 
-	fields = append(fields, labels...)
+	countsLine := strings.Join(counts, "\t")
+	fmt.Fprintf(w, "%s\t", countsLine)
 
-	line := strings.Join(fields, " ")
+	labelLine := strings.Join(labels, " ")
+	if labelLine != "" {
+		fmt.Fprintf(w, " %s", labelLine)
+	}
 
-	fmt.Fprintln(w, line)
+	fmt.Fprintf(w, "\n")
 }
 
 func (s *Stats) Add(other Stats) {

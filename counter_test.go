@@ -33,7 +33,7 @@ func TestPrint(t *testing.T) {
 				PrintWords: false,
 				PrintBytes: false,
 			},
-			want: "1 5 24\n",
+			want: "1\t5\t24\t\n",
 		},
 		"print default": {
 			input: input{
@@ -49,7 +49,7 @@ func TestPrint(t *testing.T) {
 				PrintWords: false,
 				PrintBytes: false,
 			},
-			want: "1 5 24 file.txt\n",
+			want: "1\t5\t24\t file.txt\n",
 		},
 		"print all": {
 			input: input{
@@ -65,7 +65,7 @@ func TestPrint(t *testing.T) {
 				PrintWords: true,
 				PrintBytes: true,
 			},
-			want: "1 5 24 file.txt\n",
+			want: "1\t5\t24\t file.txt\n",
 		},
 		"print only lines": {
 			input: input{
@@ -81,7 +81,7 @@ func TestPrint(t *testing.T) {
 				PrintWords: false,
 				PrintBytes: false,
 			},
-			want: "1 file.txt\n",
+			want: "1\t file.txt\n",
 		},
 		"print only words": {
 			input: input{
@@ -97,7 +97,7 @@ func TestPrint(t *testing.T) {
 				PrintWords: true,
 				PrintBytes: false,
 			},
-			want: "5 file.txt\n",
+			want: "5\t file.txt\n",
 		},
 		"print only bytes": {
 			input: input{
@@ -113,7 +113,7 @@ func TestPrint(t *testing.T) {
 				PrintWords: false,
 				PrintBytes: true,
 			},
-			want: "24 file.txt\n",
+			want: "24\t file.txt\n",
 		},
 	}
 
