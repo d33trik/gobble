@@ -1,34 +1,35 @@
-package main_test
+package counter_test
 
 import (
 	"bytes"
 	"strings"
 	"testing"
 
-	gobble "github.com/d33trik/gobble"
+	"github.com/d33trik/gobble/pkg/counter"
+	"github.com/d33trik/gobble/pkg/display"
 )
 
 func TestPrint(t *testing.T) {
 	type input struct {
-		stats gobble.Stats
+		stats counter.Stats
 		label []string
 	}
 
 	tests := map[string]struct {
 		input input
-		opts  gobble.DisplayOptions
+		opts  display.Options
 		want  string
 	}{
 		"empty label": {
 			input: input{
-				stats: gobble.Stats{
+				stats: counter.Stats{
 					Lines: 1,
 					Words: 5,
 					Bytes: 24,
 				},
 				label: []string{},
 			},
-			opts: gobble.DisplayOptions{
+			opts: display.Options{
 				PrintLines: false,
 				PrintWords: false,
 				PrintBytes: false,
@@ -37,14 +38,14 @@ func TestPrint(t *testing.T) {
 		},
 		"print default": {
 			input: input{
-				stats: gobble.Stats{
+				stats: counter.Stats{
 					Lines: 1,
 					Words: 5,
 					Bytes: 24,
 				},
 				label: []string{"file.txt"},
 			},
-			opts: gobble.DisplayOptions{
+			opts: display.Options{
 				PrintLines: false,
 				PrintWords: false,
 				PrintBytes: false,
@@ -53,14 +54,14 @@ func TestPrint(t *testing.T) {
 		},
 		"print all": {
 			input: input{
-				stats: gobble.Stats{
+				stats: counter.Stats{
 					Lines: 1,
 					Words: 5,
 					Bytes: 24,
 				},
 				label: []string{"file.txt"},
 			},
-			opts: gobble.DisplayOptions{
+			opts: display.Options{
 				PrintLines: true,
 				PrintWords: true,
 				PrintBytes: true,
@@ -69,14 +70,14 @@ func TestPrint(t *testing.T) {
 		},
 		"print only lines": {
 			input: input{
-				stats: gobble.Stats{
+				stats: counter.Stats{
 					Lines: 1,
 					Words: 5,
 					Bytes: 24,
 				},
 				label: []string{"file.txt"},
 			},
-			opts: gobble.DisplayOptions{
+			opts: display.Options{
 				PrintLines: true,
 				PrintWords: false,
 				PrintBytes: false,
@@ -85,14 +86,14 @@ func TestPrint(t *testing.T) {
 		},
 		"print only words": {
 			input: input{
-				stats: gobble.Stats{
+				stats: counter.Stats{
 					Lines: 1,
 					Words: 5,
 					Bytes: 24,
 				},
 				label: []string{"file.txt"},
 			},
-			opts: gobble.DisplayOptions{
+			opts: display.Options{
 				PrintLines: false,
 				PrintWords: true,
 				PrintBytes: false,
@@ -101,14 +102,14 @@ func TestPrint(t *testing.T) {
 		},
 		"print only bytes": {
 			input: input{
-				stats: gobble.Stats{
+				stats: counter.Stats{
 					Lines: 1,
 					Words: 5,
 					Bytes: 24,
 				},
 				label: []string{"file.txt"},
 			},
-			opts: gobble.DisplayOptions{
+			opts: display.Options{
 				PrintLines: false,
 				PrintWords: false,
 				PrintBytes: true,
@@ -132,28 +133,28 @@ func TestPrint(t *testing.T) {
 
 func TestAdd(t *testing.T) {
 	type input struct {
-		stats gobble.Stats
-		other gobble.Stats
+		stats counter.Stats
+		other counter.Stats
 	}
 
 	tests := map[string]struct {
 		input input
-		want  gobble.Stats
+		want  counter.Stats
 	}{
 		"simple add": {
 			input: input{
-				stats: gobble.Stats{
+				stats: counter.Stats{
 					Lines: 5,
 					Words: 5,
 					Bytes: 24,
 				},
-				other: gobble.Stats{
+				other: counter.Stats{
 					Lines: 1,
 					Words: 1,
 					Bytes: 4,
 				},
 			},
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 6,
 				Words: 6,
 				Bytes: 28,
@@ -177,11 +178,11 @@ func TestAdd(t *testing.T) {
 func TestCount(t *testing.T) {
 	tests := map[string]struct {
 		input string
-		want  gobble.Stats
+		want  counter.Stats
 	}{
 		"empty input": {
 			input: "",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 0,
 				Words: 0,
 				Bytes: 0,
@@ -189,7 +190,7 @@ func TestCount(t *testing.T) {
 		},
 		"only words": {
 			input: "one two three four five six",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 0,
 				Words: 6,
 				Bytes: 27,
@@ -197,7 +198,7 @@ func TestCount(t *testing.T) {
 		},
 		"only new lines": {
 			input: "\n\n\n\n\n",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 5,
 				Words: 0,
 				Bytes: 5,
@@ -205,7 +206,7 @@ func TestCount(t *testing.T) {
 		},
 		"one new line": {
 			input: "one two three\nfour five six",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 1,
 				Words: 6,
 				Bytes: 27,
@@ -213,7 +214,7 @@ func TestCount(t *testing.T) {
 		},
 		"start one new line": {
 			input: "\none two three four five six",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 1,
 				Words: 6,
 				Bytes: 28,
@@ -221,7 +222,7 @@ func TestCount(t *testing.T) {
 		},
 		"end one new line": {
 			input: "one two three four five six\n",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 1,
 				Words: 6,
 				Bytes: 28,
@@ -229,7 +230,7 @@ func TestCount(t *testing.T) {
 		},
 		"multiple new lines": {
 			input: "one\ntwo\nthree\nfour\nfive\nsix\n",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 6,
 				Words: 6,
 				Bytes: 28,
@@ -237,7 +238,7 @@ func TestCount(t *testing.T) {
 		},
 		"only spaces": {
 			input: "       ",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 0,
 				Words: 0,
 				Bytes: 7,
@@ -245,7 +246,7 @@ func TestCount(t *testing.T) {
 		},
 		"start multiple spaces": {
 			input: "  one two three four five six",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 0,
 				Words: 6,
 				Bytes: 29,
@@ -253,7 +254,7 @@ func TestCount(t *testing.T) {
 		},
 		"end multiple spaces": {
 			input: "one two three four five six  ",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 0,
 				Words: 6,
 				Bytes: 29,
@@ -261,7 +262,7 @@ func TestCount(t *testing.T) {
 		},
 		"multiple spaces between words": {
 			input: "one two three  four five six",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 0,
 				Words: 6,
 				Bytes: 28,
@@ -269,7 +270,7 @@ func TestCount(t *testing.T) {
 		},
 		"utf8 spaces": {
 			input: "one two three four five six",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 0,
 				Words: 6,
 				Bytes: 37,
@@ -277,7 +278,7 @@ func TestCount(t *testing.T) {
 		},
 		"unicode characters": {
 			input: "Ђ ʩ",
-			want: gobble.Stats{
+			want: counter.Stats{
 				Lines: 0,
 				Words: 2,
 				Bytes: 5,
@@ -289,7 +290,7 @@ func TestCount(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			r := strings.NewReader(tc.input)
 
-			got := gobble.Count(r)
+			got := counter.Count(r)
 			if got != tc.want {
 				t.Logf("got: %v, want: %v", got, tc.want)
 				t.Fail()
@@ -300,11 +301,11 @@ func TestCount(t *testing.T) {
 
 func TestPrintHeader(t *testing.T) {
 	tests := map[string]struct {
-		opts gobble.DisplayOptions
+		opts display.Options
 		want string
 	}{
 		"print all headers": {
-			opts: gobble.DisplayOptions{
+			opts: display.Options{
 				PrintLines: true,
 				PrintWords: true,
 				PrintBytes: true,
@@ -312,7 +313,7 @@ func TestPrintHeader(t *testing.T) {
 			want: "lines\twords\tbytes\t\n",
 		},
 		"print only lines header": {
-			opts: gobble.DisplayOptions{
+			opts: display.Options{
 				PrintLines: true,
 				PrintWords: false,
 				PrintBytes: false,
@@ -320,7 +321,7 @@ func TestPrintHeader(t *testing.T) {
 			want: "lines\t\n",
 		},
 		"print only words header": {
-			opts: gobble.DisplayOptions{
+			opts: display.Options{
 				PrintLines: false,
 				PrintWords: true,
 				PrintBytes: false,
@@ -328,7 +329,7 @@ func TestPrintHeader(t *testing.T) {
 			want: "words\t\n",
 		},
 		"print only bytes header": {
-			opts: gobble.DisplayOptions{
+			opts: display.Options{
 				PrintLines: false,
 				PrintWords: false,
 				PrintBytes: true,
@@ -340,7 +341,7 @@ func TestPrintHeader(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			got := &bytes.Buffer{}
-			gobble.PrintHeader(got, tc.opts)
+			counter.PrintHeader(got, tc.opts)
 
 			if got.String() != tc.want {
 				t.Logf("got %s, want: %s", got, tc.want)

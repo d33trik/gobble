@@ -6,33 +6,13 @@ import (
 	"log"
 	"os"
 	"text/tabwriter"
+
+	"github.com/d33trik/gobble/pkg/counter"
+	"github.com/d33trik/gobble/pkg/display"
 )
 
-type DisplayOptions struct {
-	PrintHeader bool
-	PrintLines  bool
-	PrintWords  bool
-	PrintBytes  bool
-}
-
-func (d DisplayOptions) UseDefault() bool {
-	return !d.PrintLines && !d.PrintWords && !d.PrintBytes
-}
-
-func (d DisplayOptions) ShouldPrintLines() bool {
-	return d.PrintLines || d.UseDefault()
-}
-
-func (d DisplayOptions) ShouldPrintWords() bool {
-	return d.PrintWords || d.UseDefault()
-}
-
-func (d DisplayOptions) ShouldPrintBytes() bool {
-	return d.PrintBytes || d.UseDefault()
-}
-
 func main() {
-	opts := DisplayOptions{}
+	opts := display.Options{}
 	log.SetFlags(0)
 
 	tw := tabwriter.NewWriter(os.Stdout, 0, 8, 1, ' ', tabwriter.AlignRight)
@@ -43,16 +23,16 @@ func main() {
 	flag.BoolVar(&opts.PrintBytes, "b", false, "Print the number of bytes")
 	flag.Parse()
 
-	totals := Stats{}
+	totals := counter.Stats{}
 	hadError := false
 	filenames := flag.Args()
 
 	if opts.PrintHeader {
-		PrintHeader(tw, opts)
+		counter.PrintHeader(tw, opts)
 	}
 
 	if len(filenames) == 0 {
-		stats := Count(os.Stdin)
+		stats := counter.Count(os.Stdin)
 		stats.Print(tw, opts)
 	}
 
@@ -66,7 +46,7 @@ func main() {
 			}
 			defer file.Close()
 
-			stats := Count(file)
+			stats := counter.Count(file)
 			totals.Add(stats)
 
 			stats.Print(tw, opts, filename)

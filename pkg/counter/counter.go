@@ -1,4 +1,4 @@
-package main
+package counter
 
 import (
 	"bufio"
@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
+
+	"github.com/d33trik/gobble/pkg/display"
 )
 
 type Stats struct {
@@ -15,7 +17,7 @@ type Stats struct {
 	Bytes int
 }
 
-func (s *Stats) Print(w io.Writer, opts DisplayOptions, labels ...string) {
+func (s *Stats) Print(w io.Writer, opts display.Options, labels ...string) {
 	counts := []string{}
 
 	if opts.ShouldPrintLines() {
@@ -75,7 +77,7 @@ func Count(r io.Reader) (stats Stats) {
 	return stats
 }
 
-func PrintHeader(w io.Writer, opts DisplayOptions) {
+func PrintHeader(w io.Writer, opts display.Options) {
 	headers := []string{}
 
 	if opts.ShouldPrintLines() {
