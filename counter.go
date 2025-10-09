@@ -48,16 +48,16 @@ func Count(r io.Reader) (stats Stats) {
 	reader := bufio.NewReader(r)
 
 	for {
-		r, size, err := reader.ReadRune()
+		rune, size, err := reader.ReadRune()
 		if err != nil {
 			break
 		}
 
-		if r == '\n' {
+		if rune == '\n' {
 			stats.Lines++
 		}
 
-		isSpace := unicode.IsSpace(r)
+		isSpace := unicode.IsSpace(rune)
 
 		if !isSpace && !isInsideWord {
 			stats.Words++
