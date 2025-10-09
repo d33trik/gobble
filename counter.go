@@ -74,3 +74,22 @@ func Count(r io.Reader) (stats Stats) {
 
 	return stats
 }
+
+func PrintHeader(w io.Writer, opts DisplayOptions) {
+	headers := []string{}
+
+	if opts.ShouldPrintLines() {
+		headers = append(headers, "lines")
+	}
+
+	if opts.ShouldPrintWords() {
+		headers = append(headers, "words")
+	}
+
+	if opts.ShouldPrintBytes() {
+		headers = append(headers, "bytes")
+	}
+
+	headersLine := strings.Join(headers, "\t")
+	fmt.Fprintf(w, "%s\t\n", headersLine)
+}

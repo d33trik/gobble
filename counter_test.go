@@ -297,3 +297,55 @@ func TestCount(t *testing.T) {
 		})
 	}
 }
+
+func TestPrintHeader(t *testing.T) {
+	tests := map[string]struct {
+		opts gobble.DisplayOptions
+		want string
+	}{
+		"print all headers": {
+			opts: gobble.DisplayOptions{
+				PrintLines: true,
+				PrintWords: true,
+				PrintBytes: true,
+			},
+			want: "lines\twords\tbytes\t\n",
+		},
+		"print only lines header": {
+			opts: gobble.DisplayOptions{
+				PrintLines: true,
+				PrintWords: false,
+				PrintBytes: false,
+			},
+			want: "lines\t\n",
+		},
+		"print only words header": {
+			opts: gobble.DisplayOptions{
+				PrintLines: false,
+				PrintWords: true,
+				PrintBytes: false,
+			},
+			want: "words\t\n",
+		},
+		"print only bytes header": {
+			opts: gobble.DisplayOptions{
+				PrintLines: false,
+				PrintWords: false,
+				PrintBytes: true,
+			},
+			want: "bytes\t\n",
+		},
+	}
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			got := &bytes.Buffer{}
+			gobble.PrintHeader(got, tc.opts)
+
+			if got.String() != tc.want {
+				t.Logf("got %s, want: %s", got, tc.want)
+				t.Fail()
+			}
+		})
+	}
+}

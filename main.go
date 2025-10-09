@@ -9,9 +9,10 @@ import (
 )
 
 type DisplayOptions struct {
-	PrintLines bool
-	PrintWords bool
-	PrintBytes bool
+	PrintHeader bool
+	PrintLines  bool
+	PrintWords  bool
+	PrintBytes  bool
 }
 
 func (d DisplayOptions) UseDefault() bool {
@@ -36,6 +37,7 @@ func main() {
 
 	tw := tabwriter.NewWriter(os.Stdout, 0, 8, 1, ' ', tabwriter.AlignRight)
 
+	flag.BoolVar(&opts.PrintHeader, "h", false, "Print header")
 	flag.BoolVar(&opts.PrintLines, "l", false, "Print the number of lines")
 	flag.BoolVar(&opts.PrintWords, "w", false, "Print the number of words")
 	flag.BoolVar(&opts.PrintBytes, "b", false, "Print the number of bytes")
@@ -44,6 +46,10 @@ func main() {
 	totals := Stats{}
 	hadError := false
 	filenames := flag.Args()
+
+	if opts.PrintHeader {
+		PrintHeader(tw, opts)
+	}
 
 	if len(filenames) == 0 {
 		stats := Count(os.Stdin)
