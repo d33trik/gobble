@@ -8,32 +8,30 @@ import (
 	"text/tabwriter"
 
 	"github.com/d33trik/gobble/pkg/counter"
-	"github.com/d33trik/gobble/pkg/display"
+	"github.com/d33trik/gobble/pkg/report"
 )
 
 func main() {
-	opts := display.Options{}
 	log.SetFlags(0)
-
-	tw := tabwriter.NewWriter(os.Stdout, 0, 8, 1, ' ', tabwriter.AlignRight)
+	opts := report.Options{}
 
 	flag.BoolVar(&opts.PrintHeader, "h", false, "Print header")
-	flag.BoolVar(&opts.PrintLines, "l", false, "Print the number of lines")
+	flag.BoolVar(&opts.PrintLines, "l", false, "Print the number of new lines")
 	flag.BoolVar(&opts.PrintWords, "w", false, "Print the number of words")
 	flag.BoolVar(&opts.PrintBytes, "b", false, "Print the number of bytes")
 	flag.Parse()
 
-	totals := counter.Stats{}
 	hadError := false
+	totals := counter.Stats{}
 	filenames := flag.Args()
+	tw := tabwriter.NewWriter(os.Stdout, 0, 8, 1, ' ', tabwriter.AlignRight)
+	printer := report.NewPrinter(tw, opts)
 
-	if opts.PrintHeader {
-		display.PrintHeader(tw, opts)
-	}
+	printer.PrintHeader()
 
 	if len(filenames) == 0 {
 		stats := counter.Count(os.Stdin)
-		display.PrintStats(tw, opts, stats)
+		printer.PrintStats(stats)
 	}
 
 	for _, filename := range filenames {
@@ -49,12 +47,12 @@ func main() {
 			stats := counter.Count(file)
 			totals.Add(stats)
 
-			display.PrintStats(tw, opts, stats, filename)
+			printer.PrintStats(stats, filename)
 		}()
 	}
 
 	if len(filenames) > 1 {
-		display.PrintStats(tw, opts, totals, "total")
+		printer.PrintStats(totals, "total")
 	}
 
 	tw.Flush()

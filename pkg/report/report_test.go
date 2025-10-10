@@ -1,47 +1,51 @@
-package display_test
+package report_test
 
 import (
 	"bytes"
 	"testing"
 
 	"github.com/d33trik/gobble/pkg/counter"
-	"github.com/d33trik/gobble/pkg/display"
+	"github.com/d33trik/gobble/pkg/report"
 )
 
 func TestPrintHeader(t *testing.T) {
 	tests := map[string]struct {
-		opts display.Options
+		opts report.Options
 		want string
 	}{
 		"print all headers": {
-			opts: display.Options{
-				PrintLines: true,
-				PrintWords: true,
-				PrintBytes: true,
+			opts: report.Options{
+				PrintHeader: true,
+				PrintLines:  true,
+				PrintWords:  true,
+				PrintBytes:  true,
 			},
 			want: "lines\twords\tbytes\t\n",
 		},
 		"print only lines header": {
-			opts: display.Options{
-				PrintLines: true,
-				PrintWords: false,
-				PrintBytes: false,
+			opts: report.Options{
+				PrintHeader: true,
+				PrintLines:  true,
+				PrintWords:  false,
+				PrintBytes:  false,
 			},
 			want: "lines\t\n",
 		},
 		"print only words header": {
-			opts: display.Options{
-				PrintLines: false,
-				PrintWords: true,
-				PrintBytes: false,
+			opts: report.Options{
+				PrintHeader: true,
+				PrintLines:  false,
+				PrintWords:  true,
+				PrintBytes:  false,
 			},
 			want: "words\t\n",
 		},
 		"print only bytes header": {
-			opts: display.Options{
-				PrintLines: false,
-				PrintWords: false,
-				PrintBytes: true,
+			opts: report.Options{
+				PrintHeader: true,
+				PrintLines:  false,
+				PrintWords:  false,
+				PrintBytes:  true,
 			},
 			want: "bytes\t\n",
 		},
@@ -50,7 +54,8 @@ func TestPrintHeader(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			got := &bytes.Buffer{}
-			display.PrintHeader(got, tc.opts)
+			report := report.NewPrinter(got, tc.opts)
+			report.PrintHeader()
 
 			if got.String() != tc.want {
 				t.Logf("got %s, want: %s", got, tc.want)
@@ -68,7 +73,7 @@ func TestPrintStats(t *testing.T) {
 
 	tests := map[string]struct {
 		input input
-		opts  display.Options
+		opts  report.Options
 		want  string
 	}{
 		"empty label": {
@@ -80,7 +85,7 @@ func TestPrintStats(t *testing.T) {
 				},
 				label: []string{},
 			},
-			opts: display.Options{
+			opts: report.Options{
 				PrintLines: false,
 				PrintWords: false,
 				PrintBytes: false,
@@ -96,7 +101,7 @@ func TestPrintStats(t *testing.T) {
 				},
 				label: []string{"file.txt"},
 			},
-			opts: display.Options{
+			opts: report.Options{
 				PrintLines: false,
 				PrintWords: false,
 				PrintBytes: false,
@@ -112,7 +117,7 @@ func TestPrintStats(t *testing.T) {
 				},
 				label: []string{"file.txt"},
 			},
-			opts: display.Options{
+			opts: report.Options{
 				PrintLines: true,
 				PrintWords: true,
 				PrintBytes: true,
@@ -128,7 +133,7 @@ func TestPrintStats(t *testing.T) {
 				},
 				label: []string{"file.txt"},
 			},
-			opts: display.Options{
+			opts: report.Options{
 				PrintLines: true,
 				PrintWords: false,
 				PrintBytes: false,
@@ -144,7 +149,7 @@ func TestPrintStats(t *testing.T) {
 				},
 				label: []string{"file.txt"},
 			},
-			opts: display.Options{
+			opts: report.Options{
 				PrintLines: false,
 				PrintWords: true,
 				PrintBytes: false,
@@ -160,7 +165,7 @@ func TestPrintStats(t *testing.T) {
 				},
 				label: []string{"file.txt"},
 			},
-			opts: display.Options{
+			opts: report.Options{
 				PrintLines: false,
 				PrintWords: false,
 				PrintBytes: true,
@@ -172,7 +177,8 @@ func TestPrintStats(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			got := &bytes.Buffer{}
-			display.PrintStats(got, tc.opts, tc.input.stats, tc.input.label...)
+			report := report.NewPrinter(got, tc.opts)
+			report.PrintStats(tc.input.stats, tc.input.label...)
 
 			if got.String() != tc.want {
 				t.Logf("got %s, want: %s", got, tc.want)
