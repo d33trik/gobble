@@ -2,45 +2,14 @@ package counter
 
 import (
 	"bufio"
-	"fmt"
 	"io"
-	"strconv"
-	"strings"
 	"unicode"
-
-	"github.com/d33trik/gobble/pkg/display"
 )
 
 type Stats struct {
 	Lines int
 	Words int
 	Bytes int
-}
-
-func (s *Stats) Print(w io.Writer, opts display.Options, labels ...string) {
-	counts := []string{}
-
-	if opts.ShouldPrintLines() {
-		counts = append(counts, strconv.Itoa(s.Lines))
-	}
-
-	if opts.ShouldPrintWords() {
-		counts = append(counts, strconv.Itoa(s.Words))
-	}
-
-	if opts.ShouldPrintBytes() {
-		counts = append(counts, strconv.Itoa(s.Bytes))
-	}
-
-	countsLine := strings.Join(counts, "\t")
-	fmt.Fprintf(w, "%s\t", countsLine)
-
-	labelLine := strings.Join(labels, " ")
-	if labelLine != "" {
-		fmt.Fprintf(w, " %s", labelLine)
-	}
-
-	fmt.Fprintf(w, "\n")
 }
 
 func (s *Stats) Add(other Stats) {
@@ -75,23 +44,4 @@ func Count(r io.Reader) (stats Stats) {
 	}
 
 	return stats
-}
-
-func PrintHeader(w io.Writer, opts display.Options) {
-	headers := []string{}
-
-	if opts.ShouldPrintLines() {
-		headers = append(headers, "lines")
-	}
-
-	if opts.ShouldPrintWords() {
-		headers = append(headers, "words")
-	}
-
-	if opts.ShouldPrintBytes() {
-		headers = append(headers, "bytes")
-	}
-
-	headersLine := strings.Join(headers, "\t")
-	fmt.Fprintf(w, "%s\t\n", headersLine)
 }

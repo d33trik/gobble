@@ -28,12 +28,12 @@ func main() {
 	filenames := flag.Args()
 
 	if opts.PrintHeader {
-		counter.PrintHeader(tw, opts)
+		display.PrintHeader(tw, opts)
 	}
 
 	if len(filenames) == 0 {
 		stats := counter.Count(os.Stdin)
-		stats.Print(tw, opts)
+		display.PrintStats(tw, opts, stats)
 	}
 
 	for _, filename := range filenames {
@@ -49,12 +49,12 @@ func main() {
 			stats := counter.Count(file)
 			totals.Add(stats)
 
-			stats.Print(tw, opts, filename)
+			display.PrintStats(tw, opts, stats, filename)
 		}()
 	}
 
 	if len(filenames) > 1 {
-		totals.Print(tw, opts, "total")
+		display.PrintStats(tw, opts, totals, "total")
 	}
 
 	tw.Flush()
