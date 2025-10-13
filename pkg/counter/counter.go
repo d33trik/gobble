@@ -6,6 +6,11 @@ import (
 	"unicode"
 )
 
+type FileStats struct {
+	Stats    Stats
+	Filename string
+}
+
 type Stats struct {
 	Lines int
 	Words int

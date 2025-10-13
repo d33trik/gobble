@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 	"text/tabwriter"
 
 	"github.com/d33trik/gobble/pkg/counter"
@@ -34,8 +35,15 @@ func main() {
 		printer.PrintStats(stats)
 	}
 
+	wg := sync.WaitGroup{}
+	wg.Add(len(filenames))
+
+	ch := make(chan counter.FileStats)
+
 	for _, filename := range filenames {
-		func() {
+		go func() {
+			defer wg.Done()
+
 			file, err := os.Open(filename)
 			if err != nil {
 				hadError = true
@@ -44,11 +52,21 @@ func main() {
 			}
 			defer file.Close()
 
-			stats := counter.Count(file)
-			totals.Add(stats)
-
-			printer.PrintStats(stats, filename)
+			ch <- counter.FileStats{
+				Stats:    counter.Count(file),
+				Filename: filename,
+			}
 		}()
+	}
+
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
+	for fileStats := range ch {
+		totals.Add(fileStats.Stats)
+		printer.PrintStats(fileStats.Stats, fileStats.Filename)
 	}
 
 	if len(filenames) > 1 {
