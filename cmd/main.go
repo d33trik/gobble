@@ -13,13 +13,7 @@ import (
 
 func main() {
 	log.SetFlags(0)
-	opts := report.Options{}
-
-	flag.BoolVar(&opts.PrintHeader, "h", false, "Print header")
-	flag.BoolVar(&opts.PrintLines, "l", false, "Print the number of new lines")
-	flag.BoolVar(&opts.PrintWords, "w", false, "Print the number of words")
-	flag.BoolVar(&opts.PrintBytes, "b", false, "Print the number of bytes")
-	flag.Parse()
+	opts := parseFlags()
 
 	hadError := false
 	totals := counter.Stats{}
@@ -70,4 +64,16 @@ func main() {
 	if hadError {
 		os.Exit(1)
 	}
+}
+
+func parseFlags() report.Options {
+	opts := report.Options{}
+
+	flag.BoolVar(&opts.PrintHeader, "h", false, "Print header")
+	flag.BoolVar(&opts.PrintLines, "l", false, "Print the number of new lines")
+	flag.BoolVar(&opts.PrintWords, "w", false, "Print the number of words")
+	flag.BoolVar(&opts.PrintBytes, "b", false, "Print the number of bytes")
+	flag.Parse()
+
+	return opts
 }
