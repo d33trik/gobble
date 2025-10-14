@@ -15,13 +15,13 @@ func main() {
 	log.SetFlags(0)
 	opts := parseFlags()
 
+	tw := tabwriter.NewWriter(os.Stdout, 0, 8, 1, ' ', tabwriter.AlignRight)
+	printer := report.NewPrinter(tw, opts)
+	printer.PrintHeader()
+
 	hadError := false
 	totals := counter.Stats{}
 	filenames := flag.Args()
-	tw := tabwriter.NewWriter(os.Stdout, 0, 8, 1, ' ', tabwriter.AlignRight)
-	printer := report.NewPrinter(tw, opts)
-
-	printer.PrintHeader()
 
 	if len(filenames) == 0 {
 		stats := counter.Count(os.Stdin)
@@ -30,12 +30,12 @@ func main() {
 
 	ch, errCh := counter.CountFiles(filenames)
 
-	for {
+	for ch != nil || errCh != nil {
 		select {
 		case fileStats, open := <-ch:
 			if !open {
 				ch = nil
-				break
+				continue
 			}
 
 			totals.Add(fileStats.Stats)
@@ -43,15 +43,11 @@ func main() {
 		case err, open := <-errCh:
 			if !open {
 				errCh = nil
-				break
+				continue
 			}
 
 			hadError = true
 			fmt.Fprintln(os.Stderr, "gobble:", err)
-		}
-
-		if ch == nil || errCh == nil {
-			break
 		}
 	}
 
