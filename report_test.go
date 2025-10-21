@@ -1,20 +1,19 @@
-package report_test
+package gobble_test
 
 import (
 	"bytes"
 	"testing"
 
-	"github.com/d33trik/gobble/pkg/counter"
-	"github.com/d33trik/gobble/pkg/report"
+	"github.com/d33trik/gobble"
 )
 
 func TestPrintHeader(t *testing.T) {
 	tests := map[string]struct {
-		opts report.Options
+		opts gobble.Options
 		want string
 	}{
 		"print all headers": {
-			opts: report.Options{
+			opts: gobble.Options{
 				PrintHeader: true,
 				PrintLines:  true,
 				PrintWords:  true,
@@ -23,7 +22,7 @@ func TestPrintHeader(t *testing.T) {
 			want: "lines\twords\tbytes\t\n",
 		},
 		"print only lines header": {
-			opts: report.Options{
+			opts: gobble.Options{
 				PrintHeader: true,
 				PrintLines:  true,
 				PrintWords:  false,
@@ -32,7 +31,7 @@ func TestPrintHeader(t *testing.T) {
 			want: "lines\t\n",
 		},
 		"print only words header": {
-			opts: report.Options{
+			opts: gobble.Options{
 				PrintHeader: true,
 				PrintLines:  false,
 				PrintWords:  true,
@@ -41,7 +40,7 @@ func TestPrintHeader(t *testing.T) {
 			want: "words\t\n",
 		},
 		"print only bytes header": {
-			opts: report.Options{
+			opts: gobble.Options{
 				PrintHeader: true,
 				PrintLines:  false,
 				PrintWords:  false,
@@ -54,8 +53,8 @@ func TestPrintHeader(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			got := &bytes.Buffer{}
-			report := report.NewPrinter(got, tc.opts)
-			report.PrintHeader()
+			printer := gobble.NewPrinter(got, tc.opts)
+			printer.PrintHeader()
 
 			if got.String() != tc.want {
 				t.Logf("got %s, want: %s", got, tc.want)
@@ -67,25 +66,25 @@ func TestPrintHeader(t *testing.T) {
 
 func TestPrintStats(t *testing.T) {
 	type input struct {
-		stats counter.Stats
+		stats gobble.Stats
 		label []string
 	}
 
 	tests := map[string]struct {
 		input input
-		opts  report.Options
+		opts  gobble.Options
 		want  string
 	}{
 		"empty label": {
 			input: input{
-				stats: counter.Stats{
+				stats: gobble.Stats{
 					Lines: 1,
 					Words: 5,
 					Bytes: 24,
 				},
 				label: []string{},
 			},
-			opts: report.Options{
+			opts: gobble.Options{
 				PrintLines: false,
 				PrintWords: false,
 				PrintBytes: false,
@@ -94,14 +93,14 @@ func TestPrintStats(t *testing.T) {
 		},
 		"print default": {
 			input: input{
-				stats: counter.Stats{
+				stats: gobble.Stats{
 					Lines: 1,
 					Words: 5,
 					Bytes: 24,
 				},
 				label: []string{"file.txt"},
 			},
-			opts: report.Options{
+			opts: gobble.Options{
 				PrintLines: false,
 				PrintWords: false,
 				PrintBytes: false,
@@ -110,14 +109,14 @@ func TestPrintStats(t *testing.T) {
 		},
 		"print all": {
 			input: input{
-				stats: counter.Stats{
+				stats: gobble.Stats{
 					Lines: 1,
 					Words: 5,
 					Bytes: 24,
 				},
 				label: []string{"file.txt"},
 			},
-			opts: report.Options{
+			opts: gobble.Options{
 				PrintLines: true,
 				PrintWords: true,
 				PrintBytes: true,
@@ -126,14 +125,14 @@ func TestPrintStats(t *testing.T) {
 		},
 		"print only lines": {
 			input: input{
-				stats: counter.Stats{
+				stats: gobble.Stats{
 					Lines: 1,
 					Words: 5,
 					Bytes: 24,
 				},
 				label: []string{"file.txt"},
 			},
-			opts: report.Options{
+			opts: gobble.Options{
 				PrintLines: true,
 				PrintWords: false,
 				PrintBytes: false,
@@ -142,14 +141,14 @@ func TestPrintStats(t *testing.T) {
 		},
 		"print only words": {
 			input: input{
-				stats: counter.Stats{
+				stats: gobble.Stats{
 					Lines: 1,
 					Words: 5,
 					Bytes: 24,
 				},
 				label: []string{"file.txt"},
 			},
-			opts: report.Options{
+			opts: gobble.Options{
 				PrintLines: false,
 				PrintWords: true,
 				PrintBytes: false,
@@ -158,14 +157,14 @@ func TestPrintStats(t *testing.T) {
 		},
 		"print only bytes": {
 			input: input{
-				stats: counter.Stats{
+				stats: gobble.Stats{
 					Lines: 1,
 					Words: 5,
 					Bytes: 24,
 				},
 				label: []string{"file.txt"},
 			},
-			opts: report.Options{
+			opts: gobble.Options{
 				PrintLines: false,
 				PrintWords: false,
 				PrintBytes: true,
@@ -177,8 +176,8 @@ func TestPrintStats(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			got := &bytes.Buffer{}
-			report := report.NewPrinter(got, tc.opts)
-			report.PrintStats(tc.input.stats, tc.input.label...)
+			printer := gobble.NewPrinter(got, tc.opts)
+			printer.PrintStats(tc.input.stats, tc.input.label...)
 
 			if got.String() != tc.want {
 				t.Logf("got %s, want: %s", got, tc.want)

@@ -1,12 +1,10 @@
-package report
+package gobble
 
 import (
 	"fmt"
 	"io"
 	"strconv"
 	"strings"
-
-	"github.com/d33trik/gobble/pkg/counter"
 )
 
 type Printer struct {
@@ -51,7 +49,7 @@ func (p Printer) PrintHeader() {
 	fmt.Fprintf(p.writer, "%s\t\n", headersLine)
 }
 
-func (p Printer) PrintStats(s counter.Stats, labels ...string) {
+func (p Printer) PrintStats(s Stats, labels ...string) {
 	counts := []string{}
 
 	if p.shouldPrintLines() {

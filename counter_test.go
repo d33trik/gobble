@@ -1,36 +1,36 @@
-package counter_test
+package gobble_test
 
 import (
 	"strings"
 	"testing"
 
-	"github.com/d33trik/gobble/pkg/counter"
+	"github.com/d33trik/gobble"
 )
 
 func TestAdd(t *testing.T) {
 	type input struct {
-		stats counter.Stats
-		other counter.Stats
+		stats gobble.Stats
+		other gobble.Stats
 	}
 
 	tests := map[string]struct {
 		input input
-		want  counter.Stats
+		want  gobble.Stats
 	}{
 		"simple add": {
 			input: input{
-				stats: counter.Stats{
+				stats: gobble.Stats{
 					Lines: 5,
 					Words: 5,
 					Bytes: 24,
 				},
-				other: counter.Stats{
+				other: gobble.Stats{
 					Lines: 1,
 					Words: 1,
 					Bytes: 4,
 				},
 			},
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 6,
 				Words: 6,
 				Bytes: 28,
@@ -54,11 +54,11 @@ func TestAdd(t *testing.T) {
 func TestCount(t *testing.T) {
 	tests := map[string]struct {
 		input string
-		want  counter.Stats
+		want  gobble.Stats
 	}{
 		"empty input": {
 			input: "",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 0,
 				Words: 0,
 				Bytes: 0,
@@ -66,7 +66,7 @@ func TestCount(t *testing.T) {
 		},
 		"only words": {
 			input: "one two three four five six",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 0,
 				Words: 6,
 				Bytes: 27,
@@ -74,7 +74,7 @@ func TestCount(t *testing.T) {
 		},
 		"only new lines": {
 			input: "\n\n\n\n\n",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 5,
 				Words: 0,
 				Bytes: 5,
@@ -82,7 +82,7 @@ func TestCount(t *testing.T) {
 		},
 		"one new line": {
 			input: "one two three\nfour five six",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 1,
 				Words: 6,
 				Bytes: 27,
@@ -90,7 +90,7 @@ func TestCount(t *testing.T) {
 		},
 		"start one new line": {
 			input: "\none two three four five six",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 1,
 				Words: 6,
 				Bytes: 28,
@@ -98,7 +98,7 @@ func TestCount(t *testing.T) {
 		},
 		"end one new line": {
 			input: "one two three four five six\n",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 1,
 				Words: 6,
 				Bytes: 28,
@@ -106,7 +106,7 @@ func TestCount(t *testing.T) {
 		},
 		"multiple new lines": {
 			input: "one\ntwo\nthree\nfour\nfive\nsix\n",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 6,
 				Words: 6,
 				Bytes: 28,
@@ -114,7 +114,7 @@ func TestCount(t *testing.T) {
 		},
 		"only spaces": {
 			input: "       ",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 0,
 				Words: 0,
 				Bytes: 7,
@@ -122,7 +122,7 @@ func TestCount(t *testing.T) {
 		},
 		"start multiple spaces": {
 			input: "  one two three four five six",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 0,
 				Words: 6,
 				Bytes: 29,
@@ -130,7 +130,7 @@ func TestCount(t *testing.T) {
 		},
 		"end multiple spaces": {
 			input: "one two three four five six  ",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 0,
 				Words: 6,
 				Bytes: 29,
@@ -138,7 +138,7 @@ func TestCount(t *testing.T) {
 		},
 		"multiple spaces between words": {
 			input: "one two three  four five six",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 0,
 				Words: 6,
 				Bytes: 28,
@@ -146,7 +146,7 @@ func TestCount(t *testing.T) {
 		},
 		"utf8 spaces": {
 			input: "one two three four five six",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 0,
 				Words: 6,
 				Bytes: 37,
@@ -154,7 +154,7 @@ func TestCount(t *testing.T) {
 		},
 		"unicode characters": {
 			input: "Ђ ʩ",
-			want: counter.Stats{
+			want: gobble.Stats{
 				Lines: 0,
 				Words: 2,
 				Bytes: 5,
@@ -166,7 +166,7 @@ func TestCount(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			r := strings.NewReader(tc.input)
 
-			got := counter.Count(r)
+			got := gobble.Count(r)
 			if got != tc.want {
 				t.Logf("got: %v, want: %v", got, tc.want)
 				t.Fail()

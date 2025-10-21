@@ -7,8 +7,7 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/d33trik/gobble/pkg/counter"
-	"github.com/d33trik/gobble/pkg/report"
+	"github.com/d33trik/gobble"
 )
 
 func main() {
@@ -16,19 +15,19 @@ func main() {
 	opts := parseFlags()
 
 	tw := tabwriter.NewWriter(os.Stdout, 0, 8, 1, ' ', tabwriter.AlignRight)
-	printer := report.NewPrinter(tw, opts)
+	printer := gobble.NewPrinter(tw, opts)
 	printer.PrintHeader()
 
 	hadError := false
-	totals := counter.Stats{}
+	totals := gobble.Stats{}
 	filenames := flag.Args()
 
 	if len(filenames) == 0 {
-		stats := counter.Count(os.Stdin)
+		stats := gobble.Count(os.Stdin)
 		printer.PrintStats(stats)
 	}
 
-	ch, errCh := counter.CountFiles(filenames)
+	ch, errCh := gobble.CountFiles(filenames)
 
 	for ch != nil || errCh != nil {
 		select {
@@ -62,8 +61,8 @@ func main() {
 	}
 }
 
-func parseFlags() report.Options {
-	opts := report.Options{}
+func parseFlags() gobble.Options {
+	opts := gobble.Options{}
 
 	flag.BoolVar(&opts.PrintHeader, "h", false, "Print header")
 	flag.BoolVar(&opts.PrintLines, "l", false, "Print the number of new lines")
