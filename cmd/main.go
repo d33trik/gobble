@@ -15,8 +15,7 @@ func main() {
 	opts := parseFlags()
 
 	tw := tabwriter.NewWriter(os.Stdout, 0, 8, 1, ' ', tabwriter.AlignRight)
-	printer := gobble.NewPrinter(tw, opts)
-	printer.PrintHeader()
+	gobble.PrintHeader(tw, opts)
 
 	hadError := false
 	totals := gobble.Stats{}
@@ -24,7 +23,7 @@ func main() {
 
 	if len(filenames) == 0 {
 		stats := gobble.Count(os.Stdin)
-		printer.PrintStats(stats)
+		stats.Print(tw, opts)
 	}
 
 	ch, errCh := gobble.CountFiles(filenames)
@@ -38,7 +37,7 @@ func main() {
 			}
 
 			totals.Add(fileStats.Stats)
-			printer.PrintStats(fileStats.Stats, fileStats.Filename)
+			fileStats.Stats.Print(tw, opts, fileStats.Filename)
 		case err, open := <-errCh:
 			if !open {
 				errCh = nil
@@ -51,7 +50,7 @@ func main() {
 	}
 
 	if len(filenames) > 1 {
-		printer.PrintStats(totals, "total")
+		totals.Print(tw, opts, "total")
 	}
 
 	tw.Flush()
