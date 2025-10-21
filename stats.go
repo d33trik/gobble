@@ -7,15 +7,11 @@ import (
 	"strings"
 )
 
-type FileStats struct {
-	Stats    Stats
-	Filename string
-}
-
 type Stats struct {
-	Lines int
-	Words int
-	Bytes int
+	Lines    int
+	Words    int
+	Bytes    int
+	Filename string
 }
 
 func (s *Stats) Add(other Stats) {

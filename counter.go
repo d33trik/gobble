@@ -36,8 +36,8 @@ func Count(r io.Reader) (stats Stats) {
 	return stats
 }
 
-func CountFiles(filenames []string) (<-chan FileStats, <-chan error) {
-	statsCh := make(chan FileStats)
+func CountFiles(filenames []string) (<-chan Stats, <-chan error) {
+	statsCh := make(chan Stats)
 	errCh := make(chan error)
 
 	wg := sync.WaitGroup{}
@@ -54,10 +54,10 @@ func CountFiles(filenames []string) (<-chan FileStats, <-chan error) {
 			}
 			defer file.Close()
 
-			statsCh <- FileStats{
-				Stats:    Count(file),
-				Filename: filename,
-			}
+			stats := Count(file)
+			stats.Filename = filename
+
+			statsCh <- stats
 		}()
 	}
 

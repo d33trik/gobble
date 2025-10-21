@@ -30,14 +30,14 @@ func main() {
 
 	for ch != nil || errCh != nil {
 		select {
-		case fileStats, open := <-ch:
+		case stats, open := <-ch:
 			if !open {
 				ch = nil
 				continue
 			}
 
-			totals.Add(fileStats.Stats)
-			fileStats.Stats.Print(tw, opts, fileStats.Filename)
+			totals.Add(stats)
+			stats.Print(tw, opts, stats.Filename)
 		case err, open := <-errCh:
 			if !open {
 				errCh = nil
