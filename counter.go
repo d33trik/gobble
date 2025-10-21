@@ -8,23 +8,6 @@ import (
 	"unicode"
 )
 
-type FileStats struct {
-	Stats    Stats
-	Filename string
-}
-
-type Stats struct {
-	Lines int
-	Words int
-	Bytes int
-}
-
-func (s *Stats) Add(other Stats) {
-	s.Lines += other.Lines
-	s.Words += other.Words
-	s.Bytes += other.Bytes
-}
-
 func Count(r io.Reader) (stats Stats) {
 	isInsideWord := false
 	reader := bufio.NewReader(r)
