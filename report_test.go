@@ -9,42 +9,42 @@ import (
 
 func TestPrintHeader(t *testing.T) {
 	tests := map[string]struct {
-		opts gobble.Options
+		opts gobble.DisplayOptions
 		want string
 	}{
 		"print all headers": {
-			opts: gobble.Options{
-				PrintHeader: true,
-				PrintLines:  true,
-				PrintWords:  true,
-				PrintBytes:  true,
+			opts: gobble.DisplayOptions{
+				Header: true,
+				Lines:  true,
+				Words:  true,
+				Bytes:  true,
 			},
 			want: "lines\twords\tbytes\t\n",
 		},
 		"print only lines header": {
-			opts: gobble.Options{
-				PrintHeader: true,
-				PrintLines:  true,
-				PrintWords:  false,
-				PrintBytes:  false,
+			opts: gobble.DisplayOptions{
+				Header: true,
+				Lines:  true,
+				Words:  false,
+				Bytes:  false,
 			},
 			want: "lines\t\n",
 		},
 		"print only words header": {
-			opts: gobble.Options{
-				PrintHeader: true,
-				PrintLines:  false,
-				PrintWords:  true,
-				PrintBytes:  false,
+			opts: gobble.DisplayOptions{
+				Header: true,
+				Lines:  false,
+				Words:  true,
+				Bytes:  false,
 			},
 			want: "words\t\n",
 		},
 		"print only bytes header": {
-			opts: gobble.Options{
-				PrintHeader: true,
-				PrintLines:  false,
-				PrintWords:  false,
-				PrintBytes:  true,
+			opts: gobble.DisplayOptions{
+				Header: true,
+				Lines:  false,
+				Words:  false,
+				Bytes:  true,
 			},
 			want: "bytes\t\n",
 		},
@@ -72,7 +72,7 @@ func TestPrintStats(t *testing.T) {
 
 	tests := map[string]struct {
 		input input
-		opts  gobble.Options
+		opts  gobble.DisplayOptions
 		want  string
 	}{
 		"empty label": {
@@ -84,10 +84,10 @@ func TestPrintStats(t *testing.T) {
 				},
 				label: []string{},
 			},
-			opts: gobble.Options{
-				PrintLines: false,
-				PrintWords: false,
-				PrintBytes: false,
+			opts: gobble.DisplayOptions{
+				Lines: false,
+				Words: false,
+				Bytes: false,
 			},
 			want: "1\t5\t24\t\n",
 		},
@@ -100,10 +100,10 @@ func TestPrintStats(t *testing.T) {
 				},
 				label: []string{"file.txt"},
 			},
-			opts: gobble.Options{
-				PrintLines: false,
-				PrintWords: false,
-				PrintBytes: false,
+			opts: gobble.DisplayOptions{
+				Lines: false,
+				Words: false,
+				Bytes: false,
 			},
 			want: "1\t5\t24\t file.txt\n",
 		},
@@ -116,10 +116,10 @@ func TestPrintStats(t *testing.T) {
 				},
 				label: []string{"file.txt"},
 			},
-			opts: gobble.Options{
-				PrintLines: true,
-				PrintWords: true,
-				PrintBytes: true,
+			opts: gobble.DisplayOptions{
+				Lines: true,
+				Words: true,
+				Bytes: true,
 			},
 			want: "1\t5\t24\t file.txt\n",
 		},
@@ -132,10 +132,10 @@ func TestPrintStats(t *testing.T) {
 				},
 				label: []string{"file.txt"},
 			},
-			opts: gobble.Options{
-				PrintLines: true,
-				PrintWords: false,
-				PrintBytes: false,
+			opts: gobble.DisplayOptions{
+				Lines: true,
+				Words: false,
+				Bytes: false,
 			},
 			want: "1\t file.txt\n",
 		},
@@ -148,10 +148,10 @@ func TestPrintStats(t *testing.T) {
 				},
 				label: []string{"file.txt"},
 			},
-			opts: gobble.Options{
-				PrintLines: false,
-				PrintWords: true,
-				PrintBytes: false,
+			opts: gobble.DisplayOptions{
+				Lines: false,
+				Words: true,
+				Bytes: false,
 			},
 			want: "5\t file.txt\n",
 		},
@@ -164,10 +164,10 @@ func TestPrintStats(t *testing.T) {
 				},
 				label: []string{"file.txt"},
 			},
-			opts: gobble.Options{
-				PrintLines: false,
-				PrintWords: false,
-				PrintBytes: true,
+			opts: gobble.DisplayOptions{
+				Lines: false,
+				Words: false,
+				Bytes: true,
 			},
 			want: "24\t file.txt\n",
 		},

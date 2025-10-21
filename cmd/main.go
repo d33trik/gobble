@@ -61,13 +61,13 @@ func main() {
 	}
 }
 
-func parseFlags() gobble.Options {
-	opts := gobble.Options{}
+func parseFlags() gobble.DisplayOptions {
+	opts := gobble.DisplayOptions{}
 
-	flag.BoolVar(&opts.PrintHeader, "h", false, "Print header")
-	flag.BoolVar(&opts.PrintLines, "l", false, "Print the number of new lines")
-	flag.BoolVar(&opts.PrintWords, "w", false, "Print the number of words")
-	flag.BoolVar(&opts.PrintBytes, "b", false, "Print the number of bytes")
+	flag.BoolVar(&opts.Header, "h", false, "Print header")
+	flag.BoolVar(&opts.Lines, "l", false, "Print the number of new lines")
+	flag.BoolVar(&opts.Words, "w", false, "Print the number of words")
+	flag.BoolVar(&opts.Bytes, "b", false, "Print the number of bytes")
 	flag.Parse()
 
 	return opts

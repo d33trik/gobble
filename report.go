@@ -9,17 +9,10 @@ import (
 
 type Printer struct {
 	writer io.Writer
-	opts   Options
+	opts   DisplayOptions
 }
 
-type Options struct {
-	PrintHeader bool
-	PrintLines  bool
-	PrintWords  bool
-	PrintBytes  bool
-}
-
-func NewPrinter(w io.Writer, opts Options) Printer {
+func NewPrinter(w io.Writer, opts DisplayOptions) Printer {
 	return Printer{
 		writer: w,
 		opts:   opts,
@@ -27,21 +20,21 @@ func NewPrinter(w io.Writer, opts Options) Printer {
 }
 
 func (p Printer) PrintHeader() {
-	if !p.opts.PrintHeader {
+	if !p.opts.Header {
 		return
 	}
 
 	headers := []string{}
 
-	if p.shouldPrintLines() {
+	if p.opts.printLines() {
 		headers = append(headers, "lines")
 	}
 
-	if p.shouldPrintWords() {
+	if p.opts.printWords() {
 		headers = append(headers, "words")
 	}
 
-	if p.shouldPrintBytes() {
+	if p.opts.printBytes() {
 		headers = append(headers, "bytes")
 	}
 
@@ -52,15 +45,15 @@ func (p Printer) PrintHeader() {
 func (p Printer) PrintStats(s Stats, labels ...string) {
 	counts := []string{}
 
-	if p.shouldPrintLines() {
+	if p.opts.printLines() {
 		counts = append(counts, strconv.Itoa(s.Lines))
 	}
 
-	if p.shouldPrintWords() {
+	if p.opts.printWords() {
 		counts = append(counts, strconv.Itoa(s.Words))
 	}
 
-	if p.shouldPrintBytes() {
+	if p.opts.printBytes() {
 		counts = append(counts, strconv.Itoa(s.Bytes))
 	}
 
@@ -73,20 +66,4 @@ func (p Printer) PrintStats(s Stats, labels ...string) {
 	}
 
 	fmt.Fprintf(p.writer, "\n")
-}
-
-func (p Printer) useDefault() bool {
-	return !p.opts.PrintLines && !p.opts.PrintWords && !p.opts.PrintBytes
-}
-
-func (p Printer) shouldPrintLines() bool {
-	return p.opts.PrintLines || p.useDefault()
-}
-
-func (p Printer) shouldPrintWords() bool {
-	return p.opts.PrintWords || p.useDefault()
-}
-
-func (p Printer) shouldPrintBytes() bool {
-	return p.opts.PrintBytes || p.useDefault()
 }
