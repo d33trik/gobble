@@ -26,27 +26,17 @@ func main() {
 		stats.Print(tw, opts)
 	}
 
-	ch, errCh := gobble.CountFiles(filenames)
+	statsCh := gobble.CountFiles(filenames)
 
-	for ch != nil || errCh != nil {
-		select {
-		case stats, open := <-ch:
-			if !open {
-				ch = nil
-				continue
-			}
-
-			totals.Add(stats)
-			stats.Print(tw, opts, stats.Filename)
-		case err, open := <-errCh:
-			if !open {
-				errCh = nil
-				continue
-			}
-
+	for stats := range statsCh {
+		if stats.Err != nil {
 			hadError = true
-			fmt.Fprintln(os.Stderr, "gobble:", err)
+			fmt.Fprintln(os.Stderr, "gobble:", stats.Err)
+			continue
 		}
+
+		totals.Add(stats)
+		stats.Print(tw, opts, stats.Filename)
 	}
 
 	if len(filenames) > 1 {

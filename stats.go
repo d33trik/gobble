@@ -12,6 +12,7 @@ type Stats struct {
 	Words    int
 	Bytes    int
 	Filename string
+	Err      error
 }
 
 func (s *Stats) Add(other Stats) {
