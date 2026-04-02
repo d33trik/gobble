@@ -7,7 +7,7 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/d33trik/gobble"
+	"codeberg.org/d33trik/gobble"
 )
 
 func main() {

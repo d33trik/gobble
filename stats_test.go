@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/d33trik/gobble"
+	"codeberg.org/d33trik/gobble"
 )
 
 func TestAdd(t *testing.T) {

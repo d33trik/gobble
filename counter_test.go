@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/d33trik/gobble"
+	"codeberg.org/d33trik/gobble"
 )
 
 func TestCount(t *testing.T) {
